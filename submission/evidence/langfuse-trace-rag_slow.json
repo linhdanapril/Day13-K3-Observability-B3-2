@@ -1,0 +1,45 @@
+{
+  "note": "Evidence dieu tra incident practice rag_slow (CP3). Khop 1:1 giua log JSON va trace Langfuse qua correlation_id.",
+  "langfuse_trace_url": "https://YOUR_LANGFUSE_HOST/project/cmso2esyq03rrad0cmgtfriqp/traces/97e04861dafafbef43d939de8c673aed",
+  "log_line": {
+    "event": "response_sent",
+    "latency_ms": 2652,
+    "correlation_id": "req-ef36d457",
+    "session_id": "s09",
+    "feature": "qa",
+    "user_id_hash": "4d14d5d4f719",
+    "ts": "2026-08-11T04:11:45.945998Z"
+  },
+  "langfuse_trace": {
+    "id": "97e04861dafafbef43d939de8c673aed",
+    "sessionId": "s09",
+    "userId": "4d14d5d4f719",
+    "latency_seconds": 2.653,
+    "totalCost": 0.002361,
+    "metadata": {
+      "correlation_id": "req-ef36d457",
+      "prompt_name": "day13-chat",
+      "prompt_label": "production",
+      "prompt_version": 1,
+      "prompt_source": "langfuse",
+      "doc_count": 1,
+      "query_preview": "What is the policy for PII and credit card [REDACTED_CREDIT_CARD]?"
+    }
+  },
+  "langfuse_observation": {
+    "id": "e119dc8fba4e5e39",
+    "type": "GENERATION",
+    "name": "run",
+    "startTime": "2026-08-11T04:11:43.292Z",
+    "endTime": "2026-08-11T04:11:45.945Z",
+    "latency_seconds": 2.653,
+    "usageDetails": { "prompt_tokens": 47, "completion_tokens": 148, "total": 195 }
+  },
+  "root_cause_reasoning": [
+    "Baseline (incident OFF, cung concurrency=1): latency trung binh ~157ms/request.",
+    "Voi rag_slow ON: latency tang len ~2652-2673ms/request, tang them dung ~2.5s.",
+    "app/mock_rag.py dong 18: 'if STATE[\"rag_slow\"]: time.sleep(2.5)' trong ham retrieve() -- khop chinh xac voi phan chenh lech quan sat duoc.",
+    "Trace Langfuse chi co 1 span 'run' gop chung RAG + LLM (khong tach rieng span retrieval), nen khong the nhin waterfall de chi thang vao RAG -- can doi chieu code + so sanh latency truoc/sau de ket luan.",
+    "Vuot latency_threshold_ms=2000 quy dinh trong config/challenge.json cho incident rag_slow."
+  ]
+}

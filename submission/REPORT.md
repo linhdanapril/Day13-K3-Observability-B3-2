@@ -2,10 +2,13 @@
 
 ## 1. Thông tin nhóm
 
-- Tên nhóm:
-- Repository URL:
-- Commit SHA cuối:
+- Tên nhóm: _(điền tên nhóm)_
+- Repository URL: https://github.com/linhdanapril/Day13-K3-Observability-B3-2
+- Commit SHA cuối: _(cập nhật sau khi commit lần cuối)_
 - Thành viên và vai trò:
+  - Bùi Linh Đan — Tech Lead/Backend Engineer (CP1: Middleware, Correlation ID, Enrichment logs)
+  - meadowilla369 — SRE & Alerts Engineer (CP2: Langfuse, SLO/Alert Rules, Alert Runbook)
+  - Thành viên C _(điền tên thật)_ — QA & Chief Investigator (Dashboard Spec, load test, Challenge/Practice Incident, tổng hợp report)
 
 ## 2. Kết quả kỹ thuật
 
@@ -42,13 +45,19 @@
 
 ## 6. Điều tra challenge
 
-- Challenge ID:
-- Triệu chứng từ metrics:
-- Trace ID liên quan:
-- Log line/correlation ID liên quan:
-- Root cause:
-- Fix action:
-- Preventive measure:
+- Challenge ID: `day13-k3-observability-v1` (cohort K3, incident `rag_slow`, feature ảnh hưởng `refund`) — [evidence/challenge-investigation-rag_slow.json](evidence/challenge-investigation-rag_slow.json)
+- Triệu chứng từ metrics: latency baseline ~157ms/request → ~2,651-2,694ms/request sau khi bật incident (tăng ~17 lần), P95 vượt hẳn `latency_threshold_ms=2000` quy định trong `config/challenge.json`. Ảnh dashboard: [evidence/dashboard-challenge-rag_slow.png](evidence/dashboard-challenge-rag_slow.png)
+- Trace ID liên quan: cả 5 trace của 5 câu hỏi challenge đều bị ảnh hưởng đồng đều (~2.652s), khớp 1:1 với `correlation_id` qua metadata trace:
+  - `k3-challenge-s01`: trace `382a9d68f9bf7aa78c9fe24b360899fc` / correlation `req-5424fd31`
+  - `k3-challenge-s02`: trace `1c3c2b11b03dcf51e30c88cb00aa18b1` / correlation `req-e38b5811`
+  - `k3-challenge-s03`: trace `d1c849237847bf48f3d50bbb5c05a2aa` / correlation `req-6cbd99b1`
+  - `k3-challenge-s04`: trace `70f18c64a47b48676c2da39e2aaf4d78` / correlation `req-0c78982d`
+  - `k3-challenge-s05`: trace `303fe93d342e38911137e1f256834550` / correlation `req-8af43641`
+  - Lưu ý: mỗi trace chỉ có 1 span `run` gộp chung RAG + LLM, không tách span riêng — root cause được xác định qua so sánh baseline/incident + đối chiếu code, không chỉ nhìn waterfall.
+- Log line/correlation ID liên quan: `{"event":"response_sent","latency_ms":2651,"correlation_id":"req-5424fd31","session_id":"k3-challenge-s01","feature":"refund","ts":"2026-08-11T04:27:13.342176Z"}` — đầy đủ trong [evidence/challenge-investigation-rag_slow.json](evidence/challenge-investigation-rag_slow.json)
+- Root cause: `app/mock_rag.py` dòng 18 — hàm `retrieve()` gọi `time.sleep(2.5)` khi `STATE["rag_slow"]` được bật, cộng thêm ~2.5s vào mọi request dùng RAG retrieval, khớp chính xác với độ chênh lệch latency quan sát được.
+- Fix action: tắt incident bằng `scripts/inject_incident.py --scenario rag_slow --disable` (đã xác nhận hệ thống về latency baseline ~157ms). Về lâu dài: thêm timeout/circuit breaker cho bước `retrieve()` để tránh một dependency chậm kéo sập toàn bộ latency.
+- Preventive measure: thêm alert riêng theo dõi P95 latency của từng feature (đặc biệt các feature dùng RAG) vượt 2000ms trong `config/alert_rules.yaml`; tách span RAG retrieval riêng khỏi LLM generation trong `app/agent.py` để trace waterfall chỉ thẳng vào bước chậm thay vì phải suy luận gián tiếp.
 
 ## 7. Đóng góp cá nhân
 
@@ -56,4 +65,6 @@ Với mỗi thành viên, ghi rõ nhiệm vụ và link commit/PR tương ứng.
 
 | Thành viên | Phần việc | Commit/PR | Điều đã học |
 |---|---|---|---|
-| | | | |
+| Bùi Linh Đan | CP1 — Middleware, correlation ID, log enrichment | `b61a0bd` submit CP1 | |
+| meadowilla369 | CP2 — Alert rules, runbook, dashboard tĩnh | `ac074c6` submit CP2 | |
+| Thành viên C (QA & Chief Investigator) — điền tên thật | Dashboard Streamlit live (`dashboard/streamlit_app.py`), load test, practice + challenge incident investigation (mục 6), tổng hợp report | _(chưa commit — cần commit trước khi nộp)_ | |
