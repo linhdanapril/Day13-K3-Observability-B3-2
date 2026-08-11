@@ -4,7 +4,7 @@
 
 - Tên nhóm: B3_2
 - Repository URL: https://github.com/linhdanapril/Day13-K3-Observability-B3-2
-- Commit SHA cuối: `29925a0`
+- Commit SHA cuối: `c84e992`
 - Thành viên và vai trò:
   - Bùi Linh Đan (01177) — CP1: Middleware, Correlation ID, JSON Logging
   - Lại Thế Rin (01665) — CP1: PII Scrubbing, Patterns, Metrics
