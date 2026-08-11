@@ -1,0 +1,8 @@
+Checkpoint 0 - Health check va mo truong
+
+$ curl -s http://127.0.0.1:8000/health
+{"ok":true,"tracing_enabled":true,"incidents":{"rag_slow":false,"tool_fail":false,"cost_spike":false}}
+
+- API chay tai http://127.0.0.1:8000
+- tracing_enabled=true: Lanfuse cloud da cau hinh trong .env
+- .env khong commit (nam trong .gitignore), khong lo public/secret key.

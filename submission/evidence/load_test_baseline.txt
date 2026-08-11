@@ -1,0 +1,16 @@
+Checkpoint 0 - Load test (baseline)
+
+$ python scripts/load_test.py
+[200] MISSING | qa      | 897.3ms
+[200] MISSING | qa      | 944.0ms
+[200] MISSING | summary | 932.4ms
+[200] MISSING | qa      | 855.8ms
+[200] MISSING | qa      | 1014.9ms
+[200] MISSING | summary | 987.3ms
+[200] MISSING | qa      | 865.0ms
+[200] MISSING | qa      | 876.0ms
+[200] MISSING | qa      | 824.6ms
+[200] MISSING | qa      | 845.0ms
+
+API tra HTTP 200 cho 10 request (data/sample_queries.jsonl).
+correlation_id = "MISSING" -> day la diem can xu ly o Checkpoint 1.

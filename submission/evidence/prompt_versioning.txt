@@ -1,0 +1,18 @@
+Prompt versions day13-chat (state sau rollback)
+version 1: labels=['baseline', 'production'] id=627b96d3-4530-44e7-999d-61988d3d2f2f
+  content: 'Feature={{feature}}\nDocs={{docs}}\nQuestion={{message}}\n\nAnswer the question using the docs above.'
+version 2: labels=['candidate', 'latest'] id=46941786-1653-4db2-bc01-8edacad64259
+  content: 'Feature={{feature}}\nDocs={{docs}}\nQuestion={{message}}\n\nAnswer the question using the docs above.\nKeep the answer 
+
+Traces evidence (session -> trace id -> label/version)
+s-prod-rollback3: trace=877adb2c47ed5ff66d6e4ec76f71df39 label=production version=1 source=langfuse
+s-prod: trace=c7afd50a6fa4b528c25e32a0ee4e9662 label=production version=2 source=langfuse
+s-candidate: trace=4a0b01ecba27ad87fe46f59fac43066a label=candidate version=2 source=langfuse
+s-candidate: trace=b17ee7062f9b2c69a86bb3281ae5a667 label=candidate version=2 source=langfuse
+s-candidate: trace=f555d062c9e98740ada1ef8c05a739cf label=candidate version=2 source=langfuse
+s-candidate: trace=7874df01426d4893a459649efc327dfb label=baseline version=1 source=langfuse
+s-candidate: trace=43844ba511591ea5749c52e2f2867625 label=baseline version=1 source=langfuse
+s-candidate: trace=0814a530bd7fe9d47fd9624274fea2a0 label=baseline version=1 source=langfuse
+s-baseline: trace=33dd1336383f86673bb6b02afd42df01 label=baseline version=1 source=langfuse
+s-baseline: trace=e86e23bf3974b4bc1312511f48684978 label=baseline version=1 source=langfuse
+s-baseline: trace=9511ebe2b40c04bc73426f9d991123c7 label=baseline version=1 source=langfuse
