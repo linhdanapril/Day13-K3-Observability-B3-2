@@ -1,6 +1,6 @@
 {
   "note": "Evidence dieu tra incident practice rag_slow (CP3). Khop 1:1 giua log JSON va trace Langfuse qua correlation_id.",
-  "langfuse_trace_url": "https://YOUR_LANGFUSE_HOST/project/cmso2esyq03rrad0cmgtfriqp/traces/97e04861dafafbef43d939de8c673aed",
+  "langfuse_trace_url": "https://cloud.langfuse.com/project/cmso2esyq03rrad0cmgtfriqp/traces/97e04861dafafbef43d939de8c673aed",
   "log_line": {
     "event": "response_sent",
     "latency_ms": 2652,

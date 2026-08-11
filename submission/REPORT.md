@@ -2,20 +2,25 @@
 
 ## 1. Thông tin nhóm
 
-- Tên nhóm: _(điền tên nhóm)_
+- Tên nhóm: B3_2
 - Repository URL: https://github.com/linhdanapril/Day13-K3-Observability-B3-2
-- Commit SHA cuối: _(cập nhật sau khi commit lần cuối)_
+- Commit SHA cuối: `bf11ac3`
 - Thành viên và vai trò:
   - Bùi Linh Đan — Tech Lead/Backend Engineer (CP1: Middleware, Correlation ID, Enrichment logs)
-  - meadowilla369 — SRE & Alerts Engineer (CP2: Langfuse, SLO/Alert Rules, Alert Runbook)
-  - Thành viên C _(điền tên thật)_ — QA & Chief Investigator (Dashboard Spec, load test, Challenge/Practice Incident, tổng hợp report)
+  - Trương Thảo Nguyên (meadowilla369) — SRE & Alerts Engineer (CP2: Langfuse, SLO/Alert Rules, Alert Runbook, dashboard tĩnh)
+  - Bùi Thị Như Ngọc (ngocc19) — QA & Chief Investigator (CP3: Dashboard Streamlit live, load test, practice + challenge incident investigation, tổng hợp report)
+  - Cao Thị Thu Trang — Demo & Presentation (kịch bản demo Metrics → Traces → Logs, vận hành dashboard trong buổi chấm)
+  - Trần Dương Tuấn — Evidence & Security Audit (rà soát `submission/evidence/`, kiểm tra không lộ secret/PII trong Git)
+  - Lại Thế Rin — Report & Final Review (rà soát `submission/REPORT.md`, kiểm chứng số liệu, chuẩn bị trả lời chấm điểm)
 
 ## 2. Kết quả kỹ thuật
 
 - Điểm `validate_logs.py`: 100/100 (sau CP1; baseline 30/100 — [evidence/validate_logs_baseline.txt](evidence/validate_logs_baseline.txt))
 - Tổng số traces: 115 (đếm qua Langfuse API, [evidence/traces_list.txt](evidence/traces_list.txt))
 - Số PII leak còn lại: 0
-- Link/đường dẫn dashboard: [submission/evidence/dashboard.html](evidence/dashboard.html) + ảnh [evidence/dashboard.png](evidence/dashboard.png) (self-hosted HTML)
+- Link/đường dẫn dashboard: 
+  - Dashboard tĩnh (self-hosted HTML): [evidence/dashboard.html](evidence/dashboard.html) + ảnh [evidence/dashboard.png](evidence/dashboard.png)
+  - Dashboard live (Streamlit): `streamlit run dashboard/streamlit_app.py` → http://localhost:8501 — evidence: [evidence/dashboard-challenge-rag_slow.png](evidence/dashboard-challenge-rag_slow.png)
 
 ## 3. Logging và tracing
 
@@ -66,5 +71,8 @@ Với mỗi thành viên, ghi rõ nhiệm vụ và link commit/PR tương ứng.
 | Thành viên | Phần việc | Commit/PR | Điều đã học |
 |---|---|---|---|
 | Bùi Linh Đan | CP1 — Middleware, correlation ID, log enrichment | `b61a0bd` submit CP1 | |
-| meadowilla369 | CP2 — Alert rules, runbook, dashboard tĩnh | `ac074c6` submit CP2 | |
-| Thành viên C (QA & Chief Investigator) — điền tên thật | Dashboard Streamlit live (`dashboard/streamlit_app.py`), load test, practice + challenge incident investigation (mục 6), tổng hợp report | _(chưa commit — cần commit trước khi nộp)_ | |
+| Trương Thảo Nguyên (meadowilla369) | CP2 — Langfuse, alert rules, runbook, dashboard tĩnh | `ac074c6` submit CP2 | |
+| Bùi Thị Như Ngọc (ngocc19) | CP3 — Dashboard Streamlit live, load test, practice + challenge incident investigation (mục 6), tổng hợp report | `bf11ac3` implement Streamlit dashboard + incident investigation | |
+| Cao Thị Thu Trang | Kịch bản demo, chạy API + Streamlit trong buổi chấm | _(cập nhật sau khi commit)_ | |
+| Trần Dương Tuấn | Audit evidence/secret, kiểm tra `git grep` PII | _(cập nhật sau khi commit)_ | |
+| Lại Thế Rin | Review REPORT.md, kiểm chứng số liệu | _(cập nhật sau khi commit)_ | |
