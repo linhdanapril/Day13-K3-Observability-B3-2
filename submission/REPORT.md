@@ -69,7 +69,7 @@
 | Thành viên | Phần việc | Commit |
 |---|---|---|
 | Bùi Linh Đan (01177) | **CP1** — Middleware, correlation ID, JSON logging | `b61a0bd` |
-| Lại Thế Rin (01665) | **CP1** — PII patterns, scrub_event, error_rate metrics | `b82f4c0` |
+| Lại Thế Rin (01665) | **CP1** — PII patterns, scrub_event, error_rate metrics | `c84e992` |
 | Trương Thảo Nguyên (01389) | **CP2** — Langfuse, dashboard, alerts | `ac074c6` |
 | Cao Thị Thu Trang (01885) | **CP2** — Prompt versioning, SLO, validation | `b82f4c0` |
 | Bùi Thị Như Ngọc (01882) | **CP3** — Streamlit dashboard, investigation | `bf11ac3` |
