@@ -12,6 +12,15 @@ from .tracing import get_langfuse_client, observe, tracing_enabled
 from structlog.contextvars import get_contextvars
 
 
+def _prompt_metadata(prompt) -> dict[str, str]:
+    return {
+        "prompt_name": prompt.name,
+        "prompt_label": prompt.label,
+        "prompt_version": prompt.version,
+        "prompt_source": prompt.source,
+    }
+
+
 @dataclass
 class AgentResult:
     answer: str
@@ -44,12 +53,7 @@ class LabAgent:
         latency_ms = int((time.perf_counter() - started) * 1000)
         cost_usd = self._estimate_cost(response.usage.input_tokens, response.usage.output_tokens)
 
-        trace_metadata = {
-            "prompt_name": prompt.name,
-            "prompt_label": prompt.label,
-            "prompt_version": prompt.version,
-            "prompt_source": prompt.source,
-        }
+        trace_metadata = _prompt_metadata(prompt)
         correlation_id = get_contextvars().get("correlation_id")
         if correlation_id and correlation_id != "MISSING":
             trace_metadata["correlation_id"] = correlation_id
@@ -65,10 +69,7 @@ class LabAgent:
             metadata={
                 "doc_count": len(docs),
                 "query_preview": summarize_text(message),
-                "prompt_name": prompt.name,
-                "prompt_label": prompt.label,
-                "prompt_version": prompt.version,
-                "prompt_source": prompt.source,
+                **_prompt_metadata(prompt),
                 "prompt_fetch_error": prompt.fetch_error,
             },
             usage_details={
@@ -102,12 +103,15 @@ class LabAgent:
         return round(input_cost + output_cost, 6)
 
     def _heuristic_quality(self, question: str, answer: str, docs: list[str]) -> float:
+        answer_lower = answer.lower()
+        leading_tokens = question.lower().split()[:3]
+
         score = 0.5
         if docs:
             score += 0.2
         if len(answer) > 40:
             score += 0.1
-        if question.lower().split()[0:1] and any(token in answer.lower() for token in question.lower().split()[:3]):
+        if any(token in answer_lower for token in leading_tokens):
             score += 0.1
         if "[REDACTED" in answer:
             score -= 0.2

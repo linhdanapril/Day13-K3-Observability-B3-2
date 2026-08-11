@@ -30,8 +30,31 @@ def _require_text(payload: dict[str, Any], field: str) -> str:
     return value.strip()
 
 
-def load_challenge(path: str | Path = "config/challenge.json") -> ChallengeConfig:
-    challenge_path = Path(path)
+def _require_int(payload: dict[str, Any], field: str, *, positive: bool = False) -> int:
+    value = payload.get(field)
+    if not isinstance(value, int) or (positive and value <= 0):
+        suffix = "số nguyên dương" if positive else "số nguyên"
+        raise ValueError(f"{field} phải là {suffix}")
+    return value
+
+
+def _require_queries(payload: dict[str, Any]) -> list[dict[str, str]]:
+    raw_queries = payload.get("queries")
+    if not isinstance(raw_queries, list) or not raw_queries:
+        raise ValueError("queries phải là danh sách không rỗng")
+
+    queries: list[dict[str, str]] = []
+    for index, query in enumerate(raw_queries):
+        if not isinstance(query, dict) or not REQUIRED_QUERY_FIELDS.issubset(query):
+            raise ValueError(f"queries[{index}] thiếu trường bắt buộc")
+        normalized = {field: query[field] for field in REQUIRED_QUERY_FIELDS}
+        if any(not isinstance(value, str) or not value.strip() for value in normalized.values()):
+            raise ValueError(f"queries[{index}] phải chứa các chuỗi không rỗng")
+        queries.append(normalized)
+    return queries
+
+
+def _load_payload(challenge_path: Path) -> dict[str, Any]:
     if not challenge_path.exists():
         raise FileNotFoundError(
             f"{challenge_path} chưa được Lab Coach release. "
@@ -45,6 +68,11 @@ def load_challenge(path: str | Path = "config/challenge.json") -> ChallengeConfi
 
     if not isinstance(payload, dict):
         raise ValueError("challenge.json phải chứa một JSON object")
+    return payload
+
+
+def load_challenge(path: str | Path = "config/challenge.json") -> ChallengeConfig:
+    payload = _load_payload(Path(path))
 
     cohort = _require_text(payload, "cohort")
     if cohort not in {"K3", "K4"}:
@@ -54,26 +82,9 @@ def load_challenge(path: str | Path = "config/challenge.json") -> ChallengeConfi
     if incident not in STATE:
         raise ValueError(f"incident không hợp lệ: {incident}")
 
-    seed = payload.get("seed")
-    if not isinstance(seed, int):
-        raise ValueError("seed phải là số nguyên")
-
-    latency_threshold_ms = payload.get("latency_threshold_ms")
-    if not isinstance(latency_threshold_ms, int) or latency_threshold_ms <= 0:
-        raise ValueError("latency_threshold_ms phải là số nguyên dương")
-
-    raw_queries = payload.get("queries")
-    if not isinstance(raw_queries, list) or not raw_queries:
-        raise ValueError("queries phải là danh sách không rỗng")
-
-    queries: list[dict[str, str]] = []
-    for index, query in enumerate(raw_queries):
-        if not isinstance(query, dict) or not REQUIRED_QUERY_FIELDS.issubset(query):
-            raise ValueError(f"queries[{index}] thiếu trường bắt buộc")
-        normalized = {field: query[field] for field in REQUIRED_QUERY_FIELDS}
-        if any(not isinstance(value, str) or not value.strip() for value in normalized.values()):
-            raise ValueError(f"queries[{index}] phải chứa các chuỗi không rỗng")
-        queries.append(normalized)
+    seed = _require_int(payload, "seed")
+    latency_threshold_ms = _require_int(payload, "latency_threshold_ms", positive=True)
+    queries = _require_queries(payload)
 
     return ChallengeConfig(
         cohort=cohort,

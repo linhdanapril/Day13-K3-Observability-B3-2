@@ -32,8 +32,13 @@ def percentile(values: list[int], p: int) -> float:
     if not values:
         return 0.0
     items = sorted(values)
-    idx = max(0, min(len(items) - 1, round((p / 100) * len(items) + 0.5) - 1))
-    return float(items[idx])
+    rank = round((p / 100) * len(items) + 0.5) - 1
+    index = max(0, min(len(items) - 1, rank))
+    return float(items[index])
+
+
+def _rounded_mean(values: list[float], ndigits: int) -> float:
+    return round(mean(values), ndigits) if values else 0.0
 
 
 
@@ -47,11 +52,11 @@ def snapshot() -> dict:
         "latency_p50": percentile(REQUEST_LATENCIES, 50),
         "latency_p95": percentile(REQUEST_LATENCIES, 95),
         "latency_p99": percentile(REQUEST_LATENCIES, 99),
-        "avg_cost_usd": round(mean(REQUEST_COSTS), 4) if REQUEST_COSTS else 0.0,
+        "avg_cost_usd": _rounded_mean(REQUEST_COSTS, 4),
         "total_cost_usd": round(sum(REQUEST_COSTS), 4),
         "tokens_in_total": sum(REQUEST_TOKENS_IN),
         "tokens_out_total": sum(REQUEST_TOKENS_OUT),
         "error_rate_pct": round(error_rate, 2),
         "error_breakdown": dict(ERRORS),
-        "quality_avg": round(mean(QUALITY_SCORES), 4) if QUALITY_SCORES else 0.0,
+        "quality_avg": _rounded_mean(QUALITY_SCORES, 4),
     }

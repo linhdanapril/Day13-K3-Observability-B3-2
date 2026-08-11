@@ -27,6 +27,36 @@ def _compile_local_prompt(*, feature: str, docs: list[str], message: str) -> str
     )
 
 
+def _local_resolution(
+    *,
+    text: str,
+    name: str,
+    label: str,
+    source: str,
+    fetch_error: str | None = None,
+) -> ResolvedPrompt:
+    return ResolvedPrompt(
+        text=text,
+        name=name,
+        label=label,
+        version="local-v1",
+        source=source,
+        fetch_error=fetch_error,
+    )
+
+
+def _fetch_managed_prompt(client: Any, name: str, label: str) -> Any:
+    return client.get_prompt(
+        name,
+        label=label,
+        type="text",
+        fallback=DEFAULT_PROMPT_TEMPLATE,
+        cache_ttl_seconds=60,
+        fetch_timeout_seconds=2,
+        max_retries=0,
+    )
+
+
 def resolve_prompt(
     client: Any,
     *,
@@ -38,52 +68,36 @@ def resolve_prompt(
     name = os.getenv("LANGFUSE_PROMPT_NAME", "day13-chat")
     label = os.getenv("LANGFUSE_PROMPT_LABEL", "production")
     text = _compile_local_prompt(feature=feature, docs=docs, message=message)
-    if enabled:
-        try:
-            managed_prompt = client.get_prompt(
-                name,
-                label=label,
-                type="text",
-                fallback=DEFAULT_PROMPT_TEMPLATE,
-                cache_ttl_seconds=60,
-                fetch_timeout_seconds=2,
-                max_retries=0,
-            )
-            if getattr(managed_prompt, "is_fallback", False):
-                return ResolvedPrompt(
-                    text=text,
-                    name=name,
-                    label=label,
-                    version="local-v1",
-                    source="local-fallback",
-                    fetch_error="LangfuseFallback",
-                )
-            return ResolvedPrompt(
-                text=managed_prompt.compile(
-                    feature=feature,
-                    docs="\n".join(docs),
-                    message=message,
-                ),
-                name=name,
-                label=label,
-                version=str(managed_prompt.version),
-                source="langfuse",
-                managed_prompt=managed_prompt,
-            )
-        except Exception as exc:  # Langfuse là dependency ngoài; app phải có fallback local
-            return ResolvedPrompt(
+    if not enabled:
+        return _local_resolution(text=text, name=name, label=label, source="local")
+
+    try:
+        managed_prompt = _fetch_managed_prompt(client, name, label)
+        if getattr(managed_prompt, "is_fallback", False):
+            return _local_resolution(
                 text=text,
                 name=name,
                 label=label,
-                version="local-v1",
                 source="local-fallback",
-                fetch_error=type(exc).__name__,
+                fetch_error="LangfuseFallback",
             )
-
-    return ResolvedPrompt(
-        text=text,
-        name=name,
-        label=label,
-        version="local-v1",
-        source="local",
-    )
+        return ResolvedPrompt(
+            text=managed_prompt.compile(
+                feature=feature,
+                docs="\n".join(docs),
+                message=message,
+            ),
+            name=name,
+            label=label,
+            version=str(managed_prompt.version),
+            source="langfuse",
+            managed_prompt=managed_prompt,
+        )
+    except Exception as exc:  # Langfuse là dependency ngoài; app phải có fallback local
+        return _local_resolution(
+            text=text,
+            name=name,
+            label=label,
+            source="local-fallback",
+            fetch_error=type(exc).__name__,
+        )
