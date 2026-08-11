@@ -4,14 +4,14 @@
 
 - Tên nhóm: B3_2
 - Repository URL: https://github.com/linhdanapril/Day13-K3-Observability-B3-2
-- Commit SHA cuối: `b82f4c0`
+- Commit SHA cuối: `29925a0`
 - Thành viên và vai trò:
-  - Bùi Linh Đan — CP1: Middleware, Correlation ID, JSON Logging
-  - Lại Thế Rin — CP1: PII Scrubbing, Patterns, Metrics
-  - Trương Thảo Nguyên — CP2: Langfuse, Dashboard, Alerts
-  - Cao Thị Thu Trang — CP2: Prompt Versioning, SLO, Validation
-  - Bùi Thị Như Ngọc — CP3: Streamlit Dashboard, Investigation
-  - Trần Dương Tuấn — CP3: Challenge Traces, Fix, Audit
+  - Bùi Linh Đan (01177) — CP1: Middleware, Correlation ID, JSON Logging
+  - Lại Thế Rin (01665) — CP1: PII Scrubbing, Patterns, Metrics
+  - Trương Thảo Nguyên (01389) — CP2: Langfuse, Dashboard, Alerts
+  - Cao Thị Thu Trang (01885) — CP2: Prompt Versioning, SLO, Validation
+  - Bùi Thị Như Ngọc (01882) — CP3: Streamlit Dashboard, Investigation
+  - Trần Dương Tuấn (01271) — CP3: Challenge Traces, Fix, Audit
 
 ## 2. Kết quả kỹ thuật
 
@@ -68,9 +68,9 @@
 
 | Thành viên | Phần việc | Commit |
 |---|---|---|
-| **Bùi Linh Đan** | **CP1** — Implement Middleware (correlation ID generation, bind_contextvars, response headers), configure structured JSON logging, enable PII scrubbing, enrich logs với metadata (user_id_hash, session_id, feature, model, env) | `b61a0bd` |
-| **Lại Thế Rin** | **CP1** — Thêm PII patterns (passport, address_vn), mở rộng scrub_event duyệt mọi trường log, link correlation_id vào Langfuse metadata, thêm error_rate_pct vào metrics | `b82f4c0` |
-| **Trương Thảo Nguyên** | **CP2** — Cấu hình Langfuse integration, collect 115+ traces, thiết kế và implement dashboard HTML 6 panels, viết alert rules (3 rules) và alert runbook đầy đủ | `ac074c6` |
-| **Cao Thị Thu Trang** | **CP2** — Implement prompt versioning (v1 baseline, v2 candidate), thực hiện rollback production v1→v2→v1, cấu hình SLO thresholds, validate dashboard contract 6/6 panels | `b82f4c0` |
-| **Bùi Thị Như Ngọc** | **CP3** — Implement Streamlit dashboard live, inject và điều tra practice incident (rag_slow), phân tích challenge incident (latency spike: 157ms→2651ms), xác định root cause (mock_rag.py time.sleep 2.5s), tổng hợp evidence | `bf11ac3` |
-| **Trần Dương Tuấn** | **CP3** — Collect challenge traces và logs, mapping correlation_id↔trace_id, viết fix action và preventive measures, audit evidence files, kiểm tra không lộ PII/secret trong Git | `b82f4c0` |
+| Bùi Linh Đan (01177) | **CP1** — Middleware, correlation ID, JSON logging | `b61a0bd` |
+| Lại Thế Rin (01665) | **CP1** — PII patterns, scrub_event, error_rate metrics | `b82f4c0` |
+| Trương Thảo Nguyên (01389) | **CP2** — Langfuse, dashboard, alerts | `ac074c6` |
+| Cao Thị Thu Trang (01885) | **CP2** — Prompt versioning, SLO, validation | `b82f4c0` |
+| Bùi Thị Như Ngọc (01882) | **CP3** — Streamlit dashboard, investigation | `bf11ac3` |
+| Trần Dương Tuấn (01271) | **CP3** — Challenge traces, fix, audit | `b82f4c0` |
